@@ -1,7 +1,36 @@
 import { Outlet } from "react-router-dom";
 import './ui/Layout.css';
+import { useContext, useRef } from "react";
+import AppContext from "../../features/context/AppContext";
+import Base64 from "../../shared/base64/Base64";
 
 export default function Layout() {
+    const {request, setToken, user} = useContext(AppContext);
+    const closeModalRef = useRef();
+
+    const authenticate = (e) => {
+        // console.log(e);
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const login = formData.get("user-login");
+        const password = formData.get("user-password");
+        
+        // https://datatracker.ietf.org/doc/html/rfc7617#section-2
+        const userPass = `${login}:${password}`;
+        const credentials = Base64.encode(userPass);
+        request('/api/user/jwt', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Basic ${credentials}`
+            }
+        }).then(jwt => {
+            closeModalRef.current.click();
+            console.log(jwt);
+            setToken(jwt);
+        })
+        .catch(console.error);
+    };
+
     return <>
     <header> 
         <nav className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -22,11 +51,19 @@ export default function Layout() {
                     </ul>
                     
                         <div>
-                            
-                            <button type="button" className="btn btn-outline-secondary"
-                                    data-bs-toggle="modal" data-bs-target="#authModal">
-                                <i className="bi bi-box-arrow-in-right"></i>
-                            </button>
+                            {!user ? <>
+                                <button type="button" className="btn btn-outline-secondary"
+                                        data-bs-toggle="modal" data-bs-target="#authModal">
+                                    <i className="bi bi-box-arrow-in-right"></i>
+                                </button>
+                            </> : <>
+                                <button onClick={() => setToken(null)} 
+                                        type="button" 
+                                        className="btn btn-outline-warning"
+                                        title={user.name + ' ' + user.email}>
+                                    <i className="bi bi-box-arrow-right"></i>
+                                </button>
+                            </>}
                         </div>       
 
                 </div>
@@ -52,7 +89,7 @@ export default function Layout() {
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                    <form id="auth-form">
+                    <form id="auth-form" onSubmit={authenticate}>
                         <div className="input-group mb-3">
                             <span className="input-group-text" id="user-login"><i className="bi bi-key"></i></span>
                             <input name="user-login" type="text" className="form-control" placeholder="Логін" 
@@ -66,7 +103,7 @@ export default function Layout() {
                     </form>
                 </div>
                 <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button ref={closeModalRef} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
                     <button type="submit" form="auth-form" className="btn btn-primary">Вхід</button>
                 </div>
             </div>

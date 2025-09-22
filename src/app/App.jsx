@@ -1,21 +1,44 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ui/App.css'
 import Layout from '../widgets/layout/Layout';
 import Category from '../pages/category/Category';
 import Home from '../pages/home/Home';
 import AppContext from '../features/context/AppContext';
+import Base64 from '../shared/base64/Base64';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if(token) {
+      setUser( Base64.jwtDecodePayload(token) );
+    }
+    else {
+      setUser(null);
+    }
+  }, [token]);
 
   const backUrl = "https://localhost:7278";
 
   const request = (url, conf) => new Promise((resolve, reject) => {
     if(url.startsWith('/')) {
       url = backUrl + url;
+      // додаємо токен до кожного запиту, що іде до бекенду - Authorization: Bearer token
+      if(token) {
+        if(typeof conf == 'undefined') {
+          conf = {};
+        }
+        if(typeof conf.headers == 'undefined') {
+          conf.headers = {};
+        }
+        if(typeof conf.headers['Authorization'] == 'undefined') {
+          conf.headers['Authorization'] = 'Bearer ' + token + '1';
+        }
+      }
     }
-    fetch(url)
+    fetch(url, conf)
         .then(r => r.json())
         .then(j => {
             if(j.status.isOk) {
@@ -27,7 +50,7 @@ function App() {
         });
   });
 
-  return <AppContext.Provider value={ { request, backUrl } }>
+  return <AppContext.Provider value={ { request, backUrl, user, setToken } }>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />} >
