@@ -6,6 +6,7 @@ import Category from '../pages/category/Category';
 import Home from '../pages/home/Home';
 import AppContext from '../features/context/AppContext';
 import Base64 from '../shared/base64/Base64';
+import Product from '../pages/product/Product';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -55,7 +56,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />} >
           <Route index element={<Home />} />
-          <Route path="category" element={<Category />} />
+          <Route path="category/:slug" element={<Category />} />
+          <Route path="product/:slug" element={<Product />} />
         </Route>
       </Routes>
     </BrowserRouter>
