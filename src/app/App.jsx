@@ -35,7 +35,7 @@ function App() {
           conf.headers = {};
         }
         if(typeof conf.headers['Authorization'] == 'undefined') {
-          conf.headers['Authorization'] = 'Bearer ' + token + '1';
+          conf.headers['Authorization'] = 'Bearer ' + token;
         }
       }
     }
