@@ -13,10 +13,8 @@ export default function Category() {
         .catch(_ => {});
     }, [slug]);
 
-    const buyClick = e => {
-        e.stopPropagation();
-        e.preventDefault();
-        request("/api/cart/6aebf81f-33f0-4f88-a6ca-43e881e34214",{
+    const buyClick = productId => {
+        request("/api/cart/" + productId, {
             method: 'POST'
         })
         .then(console.log)
@@ -40,7 +38,9 @@ export default function Category() {
                                 &nbsp;
                                 {p.feedbackCount}
                             </span>
-                            <button className="btn btn-outline-success" onClick={buyClick}>
+                            <button 
+                                className="btn btn-outline-success" 
+                                onClick={e => {e.preventDefault(); buyClick(p.id)}}>
                                 <i className="bi bi-cart-plus"></i>
                             </button>
                         </div>

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import './ui/Layout.css';
 import { useContext, useRef } from "react";
 import AppContext from "../../features/context/AppContext";
@@ -43,10 +43,10 @@ export default function Layout() {
                 <div className="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul className="navbar-nav flex-grow-1">
                         <li className="nav-item">
-                            <a className="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <Link className="nav-link text-dark" to="/">Домашня</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <Link className="nav-link text-dark" to="/cart">Кошик</Link>
                         </li>
                     </ul>
                     
@@ -57,6 +57,9 @@ export default function Layout() {
                                     <i className="bi bi-box-arrow-in-right"></i>
                                 </button>
                             </> : <>
+                                <Link to="/cart" className="btn btn-outline-success me-3">
+                                    <i className="bi bi-cart"></i>
+                                </Link>
                                 <button onClick={() => setToken(null)} 
                                         type="button" 
                                         className="btn btn-outline-warning"

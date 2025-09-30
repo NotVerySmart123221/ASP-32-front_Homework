@@ -7,6 +7,7 @@ import Home from '../pages/home/Home';
 import AppContext from '../features/context/AppContext';
 import Base64 from '../shared/base64/Base64';
 import Product from '../pages/product/Product';
+import Cart from '../pages/cart/Cart';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -56,6 +57,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />} >
           <Route index element={<Home />} />
+          <Route path="cart" element={<Cart />} />
           <Route path="category/:slug" element={<Category />} />
           <Route path="product/:slug" element={<Product />} />
         </Route>
