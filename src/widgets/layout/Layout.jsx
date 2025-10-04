@@ -5,17 +5,15 @@ import AppContext from "../../features/context/AppContext";
 import Base64 from "../../shared/base64/Base64";
 
 export default function Layout() {
-    const {request, setToken, user} = useContext(AppContext);
+    const { cart, request, setToken, user} = useContext(AppContext);
     const closeModalRef = useRef();
 
     const authenticate = (e) => {
-        // console.log(e);
         e.preventDefault();
         const formData = new FormData(e.target);
         const login = formData.get("user-login");
         const password = formData.get("user-password");
         
-        // https://datatracker.ietf.org/doc/html/rfc7617#section-2
         const userPass = `${login}:${password}`;
         const credentials = Base64.encode(userPass);
         request('/api/user/jwt', {
@@ -25,7 +23,6 @@ export default function Layout() {
             }
         }).then(jwt => {
             closeModalRef.current.click();
-            console.log(jwt);
             setToken(jwt);
         })
         .catch(console.error);
@@ -50,24 +47,25 @@ export default function Layout() {
                         </li>
                     </ul>
                     
-                        <div>
-                            {!user ? <>
-                                <button type="button" className="btn btn-outline-secondary"
-                                        data-bs-toggle="modal" data-bs-target="#authModal">
-                                    <i className="bi bi-box-arrow-in-right"></i>
-                                </button>
-                            </> : <>
-                                <Link to="/cart" className="btn btn-outline-success me-3">
-                                    <i className="bi bi-cart"></i>
-                                </Link>
-                                <button onClick={() => setToken(null)} 
-                                        type="button" 
-                                        className="btn btn-outline-warning"
-                                        title={user.name + ' ' + user.email}>
-                                    <i className="bi bi-box-arrow-right"></i>
-                                </button>
-                            </>}
-                        </div>       
+                    <div>
+                        {!user ? <>
+                            <button type="button" className="btn btn-outline-secondary"
+                                    data-bs-toggle="modal" data-bs-target="#authModal">
+                                <i className="bi bi-box-arrow-in-right"></i>
+                            </button>
+                        </> : <>
+                            <Link to="/cart" className="btn btn-outline-success me-3 nav-cart-btn">
+                                <i className="bi bi-cart"></i>
+                                <span className="nav-cart-total">{cart?.cartItems?.length || 0}</span>
+                            </Link>
+                            <button onClick={() => setToken(null)} 
+                                    type="button" 
+                                    className="btn btn-outline-warning"
+                                    title={user.name + ' ' + user.email}>
+                                <i className="bi bi-box-arrow-right"></i>
+                            </button>
+                        </>}
+                    </div>       
 
                 </div>
             </div>

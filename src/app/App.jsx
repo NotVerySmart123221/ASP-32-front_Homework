@@ -9,9 +9,22 @@ import Base64 from '../shared/base64/Base64';
 import Product from '../pages/product/Product';
 import Cart from '../pages/cart/Cart';
 
+const initCartState = {
+  cartItems: []
+};
+
 function App() {
+  const [cart, setCart] = useState(null);
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const updateCart = () => {
+    if (user) {
+      request("/api/cart")
+        .then(setCart)
+    } else {
+      setCart(initCartState);
+    }
+  }
 
   useEffect(() => {
     if(token) {
@@ -20,11 +33,13 @@ function App() {
     else {
       setUser(null);
     }
+    updateCart();
   }, [token]);
 
   const backUrl = "https://localhost:7278";
 
   const request = (url, conf) => new Promise((resolve, reject) => {
+    console.log("Requesting", url, conf);
     if(url.startsWith('/')) {
       url = backUrl + url;
       // додаємо токен до кожного запиту, що іде до бекенду - Authorization: Bearer token
@@ -40,6 +55,7 @@ function App() {
         }
       }
     }
+    console.log("Final URL:", url);
     fetch(url, conf)
         .then(r => r.json())
         .then(j => {
@@ -52,7 +68,7 @@ function App() {
         });
   });
 
-  return <AppContext.Provider value={ { request, backUrl, user, setToken } }>
+  return <AppContext.Provider value={ { cart, updateCart, request, backUrl, user, setToken } }>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />} >

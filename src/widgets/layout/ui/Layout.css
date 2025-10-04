@@ -1,3 +1,18 @@
 main {
     flex: 1;
 }
+.nav-cart-btn {
+    position: relative; /* чтобы абсолютный элемент позиционировался внутри */
+}
+
+.nav-cart-total {
+    background: rgb(3, 166, 0);
+    border-radius: 50%;
+    color: white;
+    padding: 3px 6px;
+    font-size: 0.8rem;
+    position: absolute; /* теперь бейджик "поверх" */
+    top: -5px;
+    right: -10px;
+    line-height: 1; /* чтобы не раздувался */
+}

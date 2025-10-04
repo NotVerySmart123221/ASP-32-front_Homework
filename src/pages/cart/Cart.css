@@ -1,0 +1,12 @@
+.header-row{
+    background-color: rgb(241, 241, 241);
+    color: rgb(114, 114, 114);
+    margin-bottom: 10px;
+    padding: 20px;
+}
+
+.item-row{
+    border-bottom: 1px solid rgb(221, 221, 221);
+    margin-bottom: 10px;
+    padding-bottom: 10px
+}
